@@ -15,7 +15,7 @@ tls:
 remote-management:
   # Whether to allow remote (non-localhost) management access.
   # When false, only localhost can access management endpoints (a key is still required).
-  allow-remote: false
+  allow-remote: true
 
   # Management key. If a plaintext value is provided here, it will be hashed on startup.
   # All management requests (even from localhost) require this key.
@@ -106,6 +106,7 @@ discovery:
 # Plugin list Management API reads Logo and ConfigFields from plugin metadata for management UI display.
 # Per-plugin enabled only controls plugins.configs.<pluginID>.enabled and does not implicitly change global plugins.enabled.
 plugins:
+  # Set to true after installing the native plugins configured below.
   enabled: false
   dir: "plugins"
   # Additional plugin store registries. The built-in official registry is always included.
@@ -119,6 +120,17 @@ plugins:
   #     type: bearer
   #     token-env: "CLIPROXY_PLUGIN_STORE_TOKEN"
   configs:
+    # Chinese input guard: M0rtzz/cpa-plugin-privacyfilter, branch feat/chinese-input-guard.
+    # Install privacyfilter.so (.dylib on macOS, .dll on Windows) directly in plugins.dir.
+    # Requires Codex source metadata; see the plugin README for client configuration.
+    privacyfilter:
+      enabled: true
+      # Reject strictly above this Han / Unicode-letter percentage; equality is allowed.
+      max_han_percent: 20
+      # A leading > after whitespace exempts the whole input; source metadata is still required.
+      allow_quoted_input: true
+      skip_models: []
+      skip_formats: []
     example:
       enabled: true
       priority: 1
